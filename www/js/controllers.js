@@ -1,23 +1,9 @@
 angular.module('busitbaby.controllers', [])
 
-
-.controller('MainCtrl', function($scope){
-	console.log("this is the first page!");
-
-})
 .controller('mapCtrl', function($scope, UserService){
 	console.log("you are in mapCtrl");
   $scope.user = UserService.getUser();
 
-})
-.controller('EndCtrl', function($scope){
-	console.log("final page");
-})
-.controller('SigninCtrl', function($scope){
-	console.log("sign in page");
-})
-.controller('SignupCtrl', function($scope){
-	console.log("sign up page");
 })
 .controller('LogoutCtrl', function($scope, Auth, $location, $timeout){
 
@@ -27,7 +13,6 @@ angular.module('busitbaby.controllers', [])
     Auth.$unauth();  
     $location.path('main');
   };
-  
   
 })
 .controller('WhereCtrl', function($scope, UserService){
@@ -131,7 +116,6 @@ angular.module('busitbaby.controllers', [])
   });
 })
 .controller('MapController', 
-  // ['$scope', 'fireMap', 'isWithinRadius', '$location', 
   function($scope, UserService, fireMap, isWithinRadius, $location, $rootScope){
 
   $scope.user = UserService.getUser();
@@ -166,17 +150,10 @@ angular.module('busitbaby.controllers', [])
       }
     });
   }, 1000);
-
-  /**
-      TODO:
-      - sound alert when dragging it close to the des or when it reaches - Peter(done)
-      - twillio module so we can use it easily - shan
-      - change the destination address to cordinate(lat,lng) - alice
-     */
       
 
   /*======================================
-  =            IMPLEMENTATION            =
+  =            METHOD IMPLEMENTATION            =
   ======================================*/
 
   function checkContact(){
@@ -222,9 +199,27 @@ angular.module('busitbaby.controllers', [])
 })
 
 
+.controller('MainCtrl', function($scope){
+  console.log("this is the first page!");
+
+})
+.controller('EndCtrl', function($scope){
+  console.log("final page");
+})
+.controller('SigninCtrl', function($scope){
+  console.log("sign in page");
+})
+.controller('SignupCtrl', function($scope){
+  console.log("sign up page");
+});
 
 
 
+
+
+/*=====================================================
+=            LEGACY BASE CODE - NOT IN USE            =
+=====================================================*/
 
 // <--------------- EXTRA FEATURES WE DIDN'T IMPLEMENT FOR GREENFIELD ------->
 // AlarmCtrl

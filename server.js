@@ -1,15 +1,11 @@
-/* twillio envs */
-// Your accountSid and authToken from twilio.com/user/account
-var accountSid = 'ACa3e64a2845c19bc778fc1bf37e6a3b8b';
-// var authToken = "{{ auth_token }}";  << original 
-var authToken = "0f9456051662bec5e2aa9b591655a4ba";
-
 
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var User = require('./server/users/usermodel');
-var client = require('twilio')(accountSid, authToken);
+var twilioEnv = require('./server/config/config.js');
+var client = require('twilio')(twilioEnv.accountSid, twilioEnv.authToken);
+
 
 //express config
 var app = express();
@@ -24,7 +20,7 @@ app.listen(port);
 console.log('listening on port:', port);
 
 //connect mongo DB
-var mongoURI = process.env.MONGOLAB_URI || 'mongodb://localhost/BusitBaby_db0';
+var mongoURI = process.env.MONGOLAB_URI || 'mongodb://localhost/BusitBaby_db10';
 
 mongoose.connect(mongoURI);
 
@@ -56,11 +52,9 @@ var twillio = function(number, message) {
   }, function(err, responseData) { //this function is executed when a response is received from Twilio
 
       if (!err) { // "err" is an error received during the request, if any
-
           // "responseData" is a JavaScript object containing data received from Twilio.
           // A sample response from sending an SMS message is here (click "JSON" to see how the data appears in JavaScript):
           // http://www.twilio.com/docs/api/rest/sending-sms#example-1
-
           console.log(responseData.from); // outputs "+14506667788"
           console.log(responseData.body); // outputs "word to your mother."
 
@@ -74,10 +68,10 @@ var watchisInMiles = setInterval(function(){
   //if isInMiles is true
   User.findOne({'isInMiles': true}, function(err, user){
     if(!err){
-      console.log('get with isInMiles true', user);
       //fire twillio function
       if(user){
-        twillio(user.contact.number, user.contact.message);
+        // twillio(user.contact.number, user.contact.message); //--------- enable this when deploying the app.
+        console.log('get with isInMiles true', user);
         clearInterval(watchisInMiles);
       }
     } else {
@@ -91,9 +85,10 @@ var watchisInMiles = setInterval(function(){
 
 
 
+/*==========================================
+=            API IMPLEMENTATION            =
+==========================================*/
 
-
-// API IMPLEMENTATION ----- //
 
 //GET : /api/users/:id : get a single user
 app.get('/api/users/:id', function(req, res) {
@@ -173,6 +168,8 @@ app.put('/api/users/:id', function (req, res){
     }
   });
 })
+/*=====  End of API IMPLEMENTATION  ======*/
+
 
 
 //-----------------------------------------------------//

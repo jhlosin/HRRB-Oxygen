@@ -24,17 +24,38 @@ angular.module('busitbaby.services', [])
 
   };
 
-  var getUser = function() {
+  /* methods */
+  var getUser = getUser;
+  var setUser = setUser;
+  var addPreviousLocation = addPreviousLocation;
+  var getLatLong = getLatLong;
+  var addContact = addContact;
+  var updateUserinDB = updateUserinDB;
+
+  return {
+    getUser: getUser,
+    setUser: setUser,
+    addPreviousLocation: addPreviousLocation,
+    addContact: addContact,
+    updateUserinDB: updateUserinDB
+  };
+
+  
+  /*=============================================
+  =            METHOD IMPLEMENTATION            =
+  =============================================*/
+  
+  function getUser() {
     console.log("returning user info")
     return user;
   };
 
-  var setUser = function(key, value) {
+  function setUser(key, value) {
     user[key] = value;
     console.log("user has been updated", user);
   };
 
-  var addPreviousLocation = function(title, destination){
+  function addPreviousLocation(title, destination){
     console.log("a new location has been added", title + '-' + destination);
     user.destination = destination;
     user.previousLocation.push({
@@ -45,7 +66,7 @@ angular.module('busitbaby.services', [])
     getLatLong(user.destination);
   };
 
-  var getLatLong = function(destination){
+  function getLatLong(destination){
     //geolocation algorithm
     //request to google geolocation URL
     //return lat & long
@@ -65,7 +86,7 @@ angular.module('busitbaby.services', [])
     //console.log(destination);
   };
 
-  var addContact = function(contact){
+  function addContact(contact){
     user.contact = {
       'name': contact.name,
       'number': contact.number,
@@ -75,7 +96,7 @@ angular.module('busitbaby.services', [])
     console.log("a new contact has been added", user);
   };
 
-  var updateUserinDB = function(){ //working on here.
+  function updateUserinDB(){ //working on here.
     var defer = $q.defer();
     $http({
         method: 'POST', 
@@ -90,15 +111,6 @@ angular.module('busitbaby.services', [])
     return defer.promise;
   };
 
-
-
-  return {
-    getUser: getUser,
-    setUser: setUser,
-    addPreviousLocation: addPreviousLocation,
-    addContact: addContact,
-    updateUserinDB: updateUserinDB
-  };
 })
 
 .factory('fireMap', ['$firebaseObject', '$rootScope', 'UserService', function($firebaseObject, $rootScope, UserService){
@@ -126,10 +138,12 @@ angular.module('busitbaby.services', [])
 
       var myLatlng;
 
+      //HTML5 geolocation method. : this will get lat,lng of the current location.
       navigator.geolocation.watchPosition(function(position) {
         
+        //populating map using google API.
         myLatlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);  
-        // // myLatlng = new google.maps.LatLng(29.951066, -90.071532)
+
         var mapOptions = {
           zoom: 12,
           center: myLatlng,
@@ -142,7 +156,7 @@ angular.module('busitbaby.services', [])
         var transitLayer = new google.maps.TransitLayer();
         transitLayer.setMap(this.map);
 
-        /* multiple Markers */
+        /* generaing multiple Markers */
         var currentPos = ['currentPos',position.coords.latitude,position.coords.longitude];
         var destinationPos = ['destinationPos',UserService.getUser().destgeocode.lat(),UserService.getUser().destgeocode.lng()];
         var markers = [currentPos, destinationPos];
@@ -203,32 +217,12 @@ angular.module('busitbaby.services', [])
 
       });
       
-
-      /*===============================================================
-      =            this one is working with another marker            =
-      ===============================================================*/
-      
-      // myLatlng = new google.maps.LatLng(29.951066, -90.071532)
-      // var mapOptions = {
-      //   zoom: 12,
-      //   center: myLatlng,
-      //   mapTypeId:google.maps.MapTypeId.ROADMAP,
-      //   mapTypeControl:false,
-      //   navigationControlOptions:{style:google.maps.NavigationControlStyle.SMALL}
-      // };
-
-
-      // this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-      // var transitLayer = new google.maps.TransitLayer();
-      // transitLayer.setMap(this.map);
-
-      // this.marker = new google.maps.Marker({
-      //   position:myLatlng,
-      //   map: this.map,
-      //   title: "You are here!"
-      // })
     },
 
+
+    /*=============================================================
+    =            LEGACY CODE BELOW THAT ARE NOT IN USE            =
+    =============================================================*/
 
     renderBus: function(){
       //save context
@@ -299,67 +293,3 @@ angular.module('busitbaby.services', [])
   return obj;
 }]);
 
-
-// .factory('Sounds', function($q) {
-
-// 	var deleteSound = function(x) {
-// 		console.log("calling deleteSound");
-// 		var deferred = $q.defer();
-// 		getSounds().then(function(sounds) {
-// 			sounds.splice(x,1);
-// 			localStorage.busitbaby = JSON.stringify(sounds);
-// 			deferred.resolve();
-// 		});
-
-// 		return deferred.promise;
-
-// 	}
-
-// 	var getSounds = function() {
-// 		var deferred = $q.defer();
-// 		var sounds = [];
-
-// 		if(localStorage.busitbaby) {
-// 			sounds = JSON.parse(localStorage.busitbaby);
-// 		}
-// 		deferred.resolve(sounds);
-
-// 		return deferred.promise;
-// 	}
-
-// 	var playSound = function(x) {
-// 		getSounds().then(function(sounds) {
-// 			var sound = sounds[x];
-
-
-// 			var mediaUrl = sound.file;
-// 			if(device.platform.indexOf("iOS") >= 0) {
-// 				mediaUrl = "../Library/NoCloud/FILE" + mediaUrl.split("/").pop();
-// 			}
-// 			var media = new Media(mediaUrl, function(e) {
-// 				media.release();
-// 			}, function(err) {
-// 				console.log("media err", err);
-// 			});
-// 			media.play();
-// 		});
-// 	}
-
-// 	var saveSound = function(s) {
-// 		console.log("calling saveSound");
-// 		var deferred = $q.defer();
-// 		getSounds().then(function(sounds) {
-// 			sounds.push(s);
-// 			localStorage.busitbaby = JSON.stringify(sounds);
-// 			deferred.resolve();
-// 		});
-
-// 		return deferred.promise;
-// 	}
-
-// 	return {
-// 		get:getSounds,
-// 		save:saveSound,
-// 		delete:deleteSound,
-// 		play:playSound
-// 	};

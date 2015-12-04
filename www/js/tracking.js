@@ -1,9 +1,5 @@
 angular.module('trackingModule', [])
-  // .controller('trackingCtrl', ['$scope', 'isWithinRadius', function($scope, isWithinRadius) {
-  //   $scope.isWithinRadius = function(alertRadius, next, endCoords, startCoords) {
-  //     isWithinRadius(alertRadius, next, endCoords, startCoords);
-  //   };
-  // }])
+
   .factory('distance', function() {
     return function(lat1, lon1, lat2, lon2){
       var myPos = new google.maps.LatLng(lat1, lon1);
