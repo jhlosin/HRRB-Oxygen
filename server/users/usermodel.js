@@ -8,6 +8,10 @@ var mongoose = require('mongoose');
 //destination(str), favorite(array or obj), contacts(obj)
 
 var UserSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true
+  },
   displayName: {
     type: String,
     required: true

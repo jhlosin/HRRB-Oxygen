@@ -1,9 +1,11 @@
 
+'use strict';
+
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var User = require('./server/users/usermodel');
-var twilioEnv = require('./server/config/config.js');
+var twilioEnv = require('./server/config/config');
 var client = require('twilio')(twilioEnv.accountSid, twilioEnv.authToken);
 
 
@@ -20,10 +22,9 @@ app.listen(port);
 console.log('listening on port:', port);
 
 //connect mongo DB
-var mongoURI = process.env.MONGOLAB_URI || 'mongodb://localhost/BusitBaby_db10';
+var mongoURI = process.env.MONGOLAB_URI || 'mongodb://localhost/BusitBaby_db12';
 
 mongoose.connect(mongoURI);
-
 
 /*==============================================
 =            TWILLIO IMPLEMENTATION            =
@@ -36,11 +37,6 @@ var twillio = function(number, message) {
 
   //require the Twilio module and create a REST client
   // var client = require('twilio')('ACCOUNT_SID', 'AUTH_TOKEN');
-
-  var shanNumber = "+19493954894"
-  var peterNumber = "+821074511080";
-  var samNumber = "+12147251641";
-  var aliceNumber = "+15049521104";
 
   //Send an SMS text message
   client.sendMessage({
@@ -58,21 +54,29 @@ var twillio = function(number, message) {
           console.log(responseData.from); // outputs "+14506667788"
           console.log(responseData.body); // outputs "word to your mother."
 
+      } else {
+        console.error('error occured  while sending a twilio text.');
       }
   });
 
 };
 
-//keep watch DB using setInterval
+//keep watching DB using setInterval
 var watchisInMiles = setInterval(function(){
   //if isInMiles is true
-  User.findOne({'isInMiles': true}, function(err, user){
+  
+  User.findOne({'userId': currentUser.userId}, function(err, user){
     if(!err){
       //fire twillio function
-      if(user){
+      if(user && user.isInMiles === true){
+        console.log('currentUser with isInMiles true:',currentUser);
         // twillio(user.contact.number, user.contact.message); //--------- enable this when deploying the app.
-        console.log('get with isInMiles true', user);
+        console.log('user tru', user);
         clearInterval(watchisInMiles);
+
+        //set isInMiles back to false
+        user.isInMiles = false;
+        user.save();
       }
     } else {
       console.error("error while getting a user");
@@ -88,7 +92,7 @@ var watchisInMiles = setInterval(function(){
 /*==========================================
 =            API IMPLEMENTATION            =
 ==========================================*/
-
+var currentUser = '';
 
 //GET : /api/users/:id : get a single user
 app.get('/api/users/:id', function(req, res) {
@@ -114,27 +118,44 @@ app.get('/api/users', function (req, res){
 
 //POST : /api/users : post a single user data from facebook to a server
 app.post('/api/users', function (req, res){
-
-  var user = new User({
-    displayName: req.body.displayName,
-    emailAddress: req.body.emailAddress,
-    profileImageURL: req.body.profileImageURL,
-    destination: req.body.destination,
-    favorites : req.body.favorites,
-    contact: req.body.contact,
-    miles: req.body.miles,
-    isInMiles: req.body.isInMiles
-  });
-
-  user.save(function (err){
+  //check db to see if the user exist.(what is unique identifier?)
+  return User.findOne({'userId':req.body.userId}, function(err, user){
     if(!err){
-      return console.error("user has been created!");
+      currentUser = req.body;
+      if(user){
+        console.log('the user already exist!!', user);
+        
+        //update user info
+        user.destination = req.body.destination;
+        user.miles = req.body.miles;
+        user.isInMiles = req.body.isInMiles;
+        user.contact = req.body.contact;
+
+        // console.log('the user already updated!!', user);
+        return user.save(function (err, user){
+          if(err){
+            console.error(err);
+          } else {
+            console.log("user has been updated!!", user);
+          }
+        })
+      } else {
+        //create a user
+        var user = new User(req.body);
+        return user.save(function (err, user){
+          if(!err){
+            console.log("user has been created!", user);
+            return res.send(user);
+          } else {
+            console.error("error while creating a user", err);
+          }
+        });
+      }
     } else {
-      return console.error("error while creating a user", err);
+      console.error('error occured while your query.');
     }
   });
-
-  return res.send(user);
+  
 });
 
 //PUT : /api/users/:id : update the user info to the server

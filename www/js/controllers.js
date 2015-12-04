@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('busitbaby.controllers', [])
 
 .controller('mapCtrl', function($scope, UserService){
@@ -47,7 +49,7 @@ angular.module('busitbaby.controllers', [])
   
   function saveContactInfo() {
     UserService.addContact($scope.contact);
-    UserService.updateUserinDB().then(function (user){
+    UserService.postUserinDB().then(function (user){
       console.log('user has been updated:client side', user);
 
     });
@@ -87,6 +89,7 @@ angular.module('busitbaby.controllers', [])
       console.log(authData);
       UserService.setUser('displayName', authData.facebook.displayName);
       UserService.setUser('profileImageURL', authData.facebook.profileImageURL);
+      UserService.setUser('userId', authData.uid);
       
       //save user info to db ---------------------TODO
       
@@ -102,6 +105,7 @@ angular.module('busitbaby.controllers', [])
 
   $scope.guest = function() {
     UserService.setUser('displayName', 'Guest');
+    UserService.setUser('userId', 'guest');
   };
 
   Auth.$onAuth(function(authData) {
@@ -186,7 +190,7 @@ angular.module('busitbaby.controllers', [])
         console.log('setting inInMiles to True', UserService.getUser());
         if(UserService.getUser().isInMiles){
           //update the DB.
-          UserService.updateUserinDB().then(function(user){
+          UserService.postUserinDB().then(function(user){
             console.log('user has been updated.',user);
           });
         }

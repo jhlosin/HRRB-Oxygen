@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('busitbaby.services', [])
 
 .factory("Auth", function($firebaseAuth) {
@@ -12,6 +14,7 @@ angular.module('busitbaby.services', [])
   var geocoder = new google.maps.Geocoder();
 
   var user = {
+    userId: '',
     displayName: '',
     emailAddress: '',
     profileImageURL: '',
@@ -37,7 +40,7 @@ angular.module('busitbaby.services', [])
     setUser: setUser,
     addPreviousLocation: addPreviousLocation,
     addContact: addContact,
-    updateUserinDB: updateUserinDB
+    postUserinDB: postUserinDB
   };
 
   
@@ -46,7 +49,7 @@ angular.module('busitbaby.services', [])
   =============================================*/
   
   function getUser() {
-    console.log("returning user info")
+    // console.log("returning user info")
     return user;
   };
 
@@ -96,10 +99,10 @@ angular.module('busitbaby.services', [])
     console.log("a new contact has been added", user);
   };
 
-  function updateUserinDB(){ //working on here.
+  function postUserinDB(){ 
     var defer = $q.defer();
     $http({
-        method: 'POST', 
+        method: 'POST',
         url: '/api/users',
         cache: 'true',
         data: user
@@ -163,7 +166,7 @@ angular.module('busitbaby.services', [])
         console.log(UserService.getUser().destgeocode.lat());
 
         // Loop through our array of markers & place each one on the map  
-        for( i = 0; i < markers.length; i++ ) {
+        for(var i = 0; i < markers.length; i++ ) {
             if(i === 0){ //currentPos - dragble, custom icon
               var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
               // bounds.extend(position);

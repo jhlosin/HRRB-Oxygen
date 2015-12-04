@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('busitbaby', ['ionic', 'firebase', 'busitbaby.controllers', 'busitbaby.services', 'trackingModule'])
 
 .run(function($ionicPlatform) {
