@@ -24,7 +24,7 @@ app.listen(port);
 console.log('listening on port:', port);
 
 //connect mongo DB
-var mongoURI = process.env.MONGOLAB_URI || 'mongodb://localhost/BusitBaby_db6';
+var mongoURI = process.env.MONGOLAB_URI || 'mongodb://localhost/BusitBaby_db0';
 
 mongoose.connect(mongoURI);
 
