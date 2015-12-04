@@ -5,49 +5,24 @@
   <ion-content ng-controller="MapController" ng-init="init()">
     <!-- map has to have size or it will not show up -->
     <div id="map" style="height:250px;width:100%;" align="middle"></div>
-    <div>CurrentPos - lat:{{currentPos.latitude}}, lng:{{currentPos.longitude}}</div>
-    <div>DestinPos - lat:{{desPos.latitude}}, lng:{{desPos.longitude}}</div>
+    <!-- lat,lng position for testing -->
+    <!-- <div>CurrentPos - lat:{{currentPos.latitude}}, lng:{{currentPos.longitude}}</div>
+    <div>DestinPos - lat:{{desPos.latitude}}, lng:{{desPos.longitude}}</div> -->
+
   	<div class="locations">
       <div class="list">
 
-        <!-- <label class="item item-input item-select"> -->
-          <br>
-          <div class="mapContext">
-            <h3>Your Destination is</h3>
-            <h3><span class="mapcontextemp">{{user.destination}}</span></h3>
-            <h3 ng-show="checkContact();">We will let you know and call <span class="mapcontextemp">{{user.contact.name}}</span> when you got <span class="mapcontextemp">{{user.miles}}</span> miles close to the destination</h3>
-            <h3 ng-hide="checkContact()">We will let you know when you get <span class="mapcontextemp">{{user.miles}}</span> miles close to the destination</h3>
-          </div>
-          <!-- <select name="selection" ng-model="data.sel" ng-change="options()" class="direction">
-            <option selected>Going to W. Farms Rd</option>
-            <option>Going to Wash. Heights</option>
-          </select> -->
-        <!-- </label> -->
-        <!-- <label class="item item-input item-select">
-          <div class="input-label">
-          Distance from where you are
-          </div>
-          <select class="stop" ng-model="data.stop">
-          </select>
-        </label>
-        <label class="item item-input item-select">
-          <div class="input-label">
-          Distance
-          </div>
-          <select class="distance" ng-model="data.miles" ng-change="getLoc()">
-            <option selected disabled>Miles</option>
-            <option>0.5</option>
-            <option>1</option>
-            <option>1.5</option>
-            <option>2</option>
-          </select>
-        </label>
- -->
+        <br>
+        <div class="mapContext">
+          <h3>Your Destination is</h3>
+          <h3><span class="mapcontextemp">{{user.destination}}</span></h3>
+          <h3 ng-show="checkContact();">We will let you know and text <span class="mapcontextemp">{{user.contact.name}}</span> when you got <span class="mapcontextemp">{{user.miles}}</span> miles close to the destination</h3>
+          <h3 ng-hide="checkContact()">We will let you know when you get <span class="mapcontextemp">{{user.miles}}</span> miles close to the destination</h3>
+        </div>
       </div>
     </div
     <br>
     <div style="text-align: center">
-    <!-- <a class="button" href="#/page3" >Next</a> -->
     </div>
   </ion-content>
 </div>
